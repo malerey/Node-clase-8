@@ -1,50 +1,10 @@
-const { get } = require('mongoose');
 const Gatito = require('../models/gatitos');
+const sort = require('../utils/sort');
 
 exports.getGatitos = async (req, res) => {
   try {
 
-    // ** Filtrado avanzado
-
-    // Excluir valores de busqueda
-    const queryObj = { ...req.query };
-    const camposExcluidos = ['page', 'limite', 'ordenar'];
-    camposExcluidos.forEach(el => delete queryObj[el]);
-
-    // Filtrado con operadores 
-    let queryStr = JSON.stringify(queryObj)
-    queryStr = queryStr.replace(/gte|lte/g, match => `$${match}`)
-    let query = Gatito.find(JSON.parse(queryStr));
-
-    // Sorting (ordenamiento)
-    if (req.query.ordenar) {
-      const campos = req.query.ordenar.split(',').join(" ")
-     query = query.sort(campos) 
-    }
-    else {
-      query = query.sort("edad -nombre")
-    }
-
-
-    // ** Paginado **
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limite * 1 || 10;
-    const skip = (page - 1) * limit;
-
-    query = query.limit(limit).skip(skip);
-
-
-    // mongo
-    //    const gatitos = await Gatito.find(queryObj);
-    // mongoose
-    // const gatitos = await Gatito.find()
-    // .where('edad')
-    // .gte(5)
-    // .where('nombre')
-    // .equals('trufa')
-    // .where('disponible')
-    // .equals(true)
-
+    const { query, page } = sort(req, 'gatitos')
     const gatitos = await query;
 
     res.status(201).json({
