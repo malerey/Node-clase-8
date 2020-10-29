@@ -1,5 +1,8 @@
 const Gatito = require('../models/gatitos');
 const User = require('../models/users');
+const Adoptante = require('../models/adoptantes');
+const Refugio = require('../models/refugios');
+const Review = require('../models/reviews');
 
 const sort = (req, collection) => {
 
@@ -9,6 +12,15 @@ const sort = (req, collection) => {
   }
   else if (collection === 'users') {
     searchCollection = User
+  }
+  else if (collection === 'adoptantes') {
+    searchCollection = Adoptante
+  }
+  else if (collection === 'refugios') {
+    searchCollection = Refugio
+  }
+  else if (collection === 'reviews') {
+    searchCollection = Review
   }
   else {
     searchCollection = Gatito
